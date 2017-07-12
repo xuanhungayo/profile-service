@@ -11,19 +11,22 @@
 
 #include <mutex>
 
-#include "../thrift-gen/ProfileService.h"
-#include "MemoryCache.h"
-#include "LRUCache.h"
-#include "JSONSerialization.h"
-#include "LogHandler.h"
-
 #include <Poco/Util/AbstractConfiguration.h>
 #include <boost/thread.hpp>
 #include <kchashdb.h>
 
-using namespace profile;
-using namespace kyotocabinet;
+#include "ProfileService.h"
+#include "MemoryCache.h"
+#include "LRUCache.h"
+#include "Log.h"
+
+using profile::ProfileServiceIf;
+using profile::UserProfile;
+using profile::ProfileServiceClient;
+using kyotocabinet::HashDB;
 using Poco::Util::AbstractConfiguration;
+
+namespace service {
 
 class ProfileServiceHandler : virtual public ProfileServiceIf {
 public:
@@ -34,19 +37,20 @@ public:
 	void dumpCache(const std::string filename);
 	virtual ~ProfileServiceHandler();
 private:
-	LRUCache<int32_t, UserProfile> mem_cache_;
+	cache::LRUCache<int32_t, UserProfile> mem_cache_;
 	std::string cache_type_;
-	
-	LogHandler<int32_t, UserProfile> log_handler_;
-	
+
+	log::Log<int32_t, UserProfile> log_;
+
 	boost::shared_ptr<ProfileServiceClient> slave_;
 	bool master_enabled_;
-	
+
 	HashDB db_;
 	bool db_enabled_;
-	
+
 	boost::shared_mutex mutex_;
 };
 
+} //namespace service
 #endif /* PROFILESERVICEHANDLER_H */
 

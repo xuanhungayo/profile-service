@@ -5,8 +5,8 @@
  * Created on June 30, 2017, 11:01 AM
  */
 
-#include "../inc/ServerApp.h"
-#include "../inc/ProfileServiceHandler.h"
+#include "ServerApp.h"
+#include "ProfileServiceHandler.h"
 
 #include <thrift/concurrency/ThreadManager.h>
 #include <thrift/concurrency/PosixThreadFactory.h>
@@ -22,6 +22,10 @@ using namespace apache::thrift::concurrency;
 using namespace apache::thrift::protocol;
 using namespace apache::thrift::transport;
 using namespace apache::thrift::server;
+
+using namespace profile;
+
+namespace service {
 
 ServerApp::ServerApp() {
 }
@@ -63,19 +67,17 @@ int ServerApp::main(const ArgVec& args) {
 	boost::shared_ptr<TProtocolFactory> protocolFactory(new TBinaryProtocolFactory());
 
 	TNonblockingServer server(processor, protocolFactory, config().getInt("port"), threadManager);
-	boost::thread server_thread(&TNonblockingServer::serve, &server);
-	
-	// Set up thread for cache dumping
-	boost::thread cache_dumping_thread(&ProfileServiceHandler::dumpCache, &(*handler), config().getString("cache-file"));
-	
+	server.serve();
+
 	waitForTerminationRequest();
-	
-	server_thread.join();
-	cache_dumping_thread.join();
+
 	return Application::EXIT_OK;
 }
 
 ServerApp::~ServerApp() {
 }
 
-POCO_SERVER_MAIN(ServerApp);
+} // namespace service
+
+POCO_SERVER_MAIN(service::ServerApp);
+

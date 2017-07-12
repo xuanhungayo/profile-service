@@ -6,26 +6,25 @@
 
 /* 
  * File:   PerformanceTest.cpp
- * Author: cpu10170-local
+ * Author: xuanhungcao
  *
  * Created on June 22, 2017, 2:55 PM
  */
-#include "../inc/LRUCache.h"
-#include "../thrift-gen/ProfileService.h"
-
-#include <boost/optional.hpp>
 
 #include <stdlib.h>
 #include <iostream>
 #include <iomanip>
 #include <typeinfo>
 
+#include <boost/optional.hpp>
+
+#include "LRUCache.h"
+#include "ProfileService.h"
+
 #define RAND rand()% 10000 * rand() % 10000 + 1
 
-/*
- * Simple C++ Test Suite
- */
 using namespace profile;
+using namespace service::cache;
 
 const int32_t REQUEST_NUM = 1000000;
 

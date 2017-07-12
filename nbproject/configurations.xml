@@ -1,39 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configurationDescriptor version="100">
   <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
-    <logicalFolder name="HeaderFiles"
-                   displayName="Header Files"
-                   projectFiles="true">
-      <logicalFolder name="f1" displayName="thrift-gen" projectFiles="true">
-        <itemPath>thrift-gen/ProfileService.h</itemPath>
-        <itemPath>thrift-gen/profile_constants.h</itemPath>
-        <itemPath>thrift-gen/profile_types.h</itemPath>
-      </logicalFolder>
-      <itemPath>inc/JSONSerialization.h</itemPath>
+    <logicalFolder name="inc" displayName="inc" projectFiles="true">
+      <itemPath>inc/LRUCache-imp.h</itemPath>
       <itemPath>inc/LRUCache.h</itemPath>
-      <itemPath>inc/LogHandler.h</itemPath>
+      <itemPath>inc/Log-imp.h</itemPath>
+      <itemPath>inc/Log.h</itemPath>
       <itemPath>inc/MemoryCache.h</itemPath>
       <itemPath>inc/ProfileServiceHandler.h</itemPath>
       <itemPath>inc/ServerApp.h</itemPath>
+      <itemPath>inc/Util-imp.h</itemPath>
+      <itemPath>inc/Util.h</itemPath>
     </logicalFolder>
-    <logicalFolder name="ResourceFiles"
-                   displayName="Resource Files"
-                   projectFiles="true">
-      <itemPath>config.properties</itemPath>
+    <logicalFolder name="resource" displayName="resource" projectFiles="true">
+      <itemPath>resource/cache.bin</itemPath>
       <itemPath>resource/log.txt</itemPath>
-      <itemPath>profile.thrift</itemPath>
       <itemPath>resource/profileDB.kch</itemPath>
     </logicalFolder>
-    <logicalFolder name="SourceFiles"
-                   displayName="Source Files"
-                   projectFiles="true">
-      <logicalFolder name="f1" displayName="thrift-gen" projectFiles="true">
-        <itemPath>thrift-gen/ProfileService.cpp</itemPath>
-        <itemPath>thrift-gen/profile_constants.cpp</itemPath>
-        <itemPath>thrift-gen/profile_types.cpp</itemPath>
-      </logicalFolder>
+    <logicalFolder name="src" displayName="src" projectFiles="true">
       <itemPath>src/ProfileServiceHandler.cpp</itemPath>
       <itemPath>src/ServerApp.cpp</itemPath>
+    </logicalFolder>
+    <logicalFolder name="thrift-gen" displayName="thrift-gen" projectFiles="true">
+      <itemPath>thrift-gen/ProfileService.cpp</itemPath>
+      <itemPath>thrift-gen/ProfileService.h</itemPath>
+      <itemPath>thrift-gen/profile_constants.cpp</itemPath>
+      <itemPath>thrift-gen/profile_constants.h</itemPath>
+      <itemPath>thrift-gen/profile_types.cpp</itemPath>
+      <itemPath>thrift-gen/profile_types.h</itemPath>
     </logicalFolder>
     <logicalFolder name="TestFiles"
                    displayName="Test Files"
@@ -64,7 +58,14 @@
                    kind="IMPORTANT_FILES_FOLDER">
       <itemPath>Makefile</itemPath>
     </logicalFolder>
+    <itemPath>profile.thrift</itemPath>
   </logicalFolder>
+  <sourceRootList>
+    <Elem>inc</Elem>
+    <Elem>src</Elem>
+    <Elem>resource</Elem>
+    <Elem>thrift-gen</Elem>
+  </sourceRootList>
   <projectmakefile>Makefile</projectmakefile>
   <confs>
     <conf name="Debug" type="1">
@@ -76,6 +77,10 @@
       <compileType>
         <ccTool>
           <standard>8</standard>
+          <incDir>
+            <pElem>inc</pElem>
+            <pElem>thrift-gen</pElem>
+          </incDir>
         </ccTool>
         <linkerTool>
           <linkerLibItems>
@@ -100,8 +105,6 @@
           </linkerLibItems>
         </linkerTool>
       </compileType>
-      <item path="config.properties" ex="false" tool="3" flavor2="0">
-      </item>
       <folder path="TestFiles/f1">
         <cTool>
           <incDir>
@@ -147,11 +150,13 @@
           <output>${TESTDIR}/TestFiles/f3</output>
         </linkerTool>
       </folder>
-      <item path="inc/JSONSerialization.h" ex="false" tool="3" flavor2="0">
+      <item path="inc/LRUCache-imp.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="inc/LRUCache.h" ex="false" tool="3" flavor2="0">
       </item>
-      <item path="inc/LogHandler.h" ex="false" tool="3" flavor2="0">
+      <item path="inc/Log-imp.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="inc/Log.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="inc/MemoryCache.h" ex="false" tool="3" flavor2="0">
       </item>
@@ -159,7 +164,13 @@
       </item>
       <item path="inc/ServerApp.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="inc/Util-imp.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="inc/Util.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="profile.thrift" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="resource/cache.bin" ex="false" tool="3" flavor2="0">
       </item>
       <item path="resource/log.txt" ex="false" tool="3" flavor2="0">
       </item>
@@ -200,6 +211,10 @@
         </cTool>
         <ccTool>
           <developmentMode>5</developmentMode>
+          <incDir>
+            <pElem>inc</pElem>
+            <pElem>thrift-gen</pElem>
+          </incDir>
         </ccTool>
         <fortranCompilerTool>
           <developmentMode>5</developmentMode>
@@ -208,8 +223,6 @@
           <developmentMode>5</developmentMode>
         </asmTool>
       </compileType>
-      <item path="config.properties" ex="false" tool="3" flavor2="0">
-      </item>
       <folder path="TestFiles/f1">
         <cTool>
           <incDir>
@@ -255,11 +268,13 @@
           <output>${TESTDIR}/TestFiles/f3</output>
         </linkerTool>
       </folder>
-      <item path="inc/JSONSerialization.h" ex="false" tool="3" flavor2="0">
+      <item path="inc/LRUCache-imp.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="inc/LRUCache.h" ex="false" tool="3" flavor2="0">
       </item>
-      <item path="inc/LogHandler.h" ex="false" tool="3" flavor2="0">
+      <item path="inc/Log-imp.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="inc/Log.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="inc/MemoryCache.h" ex="false" tool="3" flavor2="0">
       </item>
@@ -267,7 +282,13 @@
       </item>
       <item path="inc/ServerApp.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="inc/Util-imp.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="inc/Util.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="profile.thrift" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="resource/cache.bin" ex="false" tool="3" flavor2="0">
       </item>
       <item path="resource/log.txt" ex="false" tool="3" flavor2="0">
       </item>

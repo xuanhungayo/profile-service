@@ -18,6 +18,8 @@ using Poco::Util::ServerApplication;
 using Poco::Util::Option;
 using Poco::Util::OptionSet;
 
+namespace service {
+
 class ServerApp : public ServerApplication {
 public:
 	ServerApp();
@@ -28,9 +30,9 @@ protected:
 	void defineOptions(OptionSet& option);
 	void handleOption(const std::string& name, const std::string& value);
 	int main(const ArgVec& args);
-private:
-
 };
+
+} // namespace service
 
 #endif /* SERVERAPP_H */
 

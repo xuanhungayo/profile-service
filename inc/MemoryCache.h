@@ -10,21 +10,24 @@
 
 #include <boost/optional.hpp>
 
+namespace service {
+namespace cache {
+
 template<class Key, class Value>
 class MemoryCache {
-protected:
-	int capacity;
 public:
-
-	MemoryCache(const int _capacity) : capacity(_capacity) {
-	}
+	virtual bool contain(const Key& key) = 0;
 	virtual boost::optional<Value> get(const Key& key) = 0;
 	virtual void set(const Key& key, const Value& value) = 0;
 	virtual void remove(const Key& key) = 0;
-	virtual bool contain(const Key& key) = 0;
 	virtual void clear() = 0;
-	virtual ~MemoryCache() {};
+	virtual void readFromBinaryFile(const std::string& filename) = 0;
+	virtual void writeToBinaryFile(const std::string& filename) = 0;
 };
+
+
+} // namespace cache
+} // namespace service
 
 #endif /* MEMORYCACHE_H */
 

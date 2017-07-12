@@ -5,7 +5,7 @@
  * Created on June 29, 2017, 2:25 PM
  */
 
-#include "../inc/ProfileServiceHandler.h"
+#include "ProfileServiceHandler.h"
 
 #include <iostream>
 
@@ -16,14 +16,19 @@
 #include <thrift/transport/TTransportUtils.h>
 #include <thrift/protocol/TBinaryProtocol.h>
 
+#include "Util.h"
+
 using apache::thrift::protocol::TBinaryProtocol;
 using apache::thrift::transport::TSocket;
 using apache::thrift::transport::TFramedTransport;
 
+using namespace profile;
+
+namespace service {
 
 ProfileServiceHandler::ProfileServiceHandler(const AbstractConfiguration& config) :
 mem_cache_(config.getInt("cache-capacity")),
-log_handler_(config.getString("log-file")),
+log_(config.getString("log-file")),
 cache_type_(config.getString("cache")),
 db_enabled_(config.getBool("db")),
 master_enabled_(config.getBool("master"))
@@ -34,7 +39,7 @@ master_enabled_(config.getBool("master"))
 	
 	// Using recover mode
 	if (config.getBool("recover")) 
-		log_handler_.recover(mem_cache_);
+		log_.recover(mem_cache_);
 	
 	// Set up connection to master server
 	if (master_enabled_) {
@@ -46,11 +51,11 @@ master_enabled_(config.getBool("master"))
 		transport->open();
 	}
 	
-	log_handler_.startWriting();
+	log_.startWriting();
 }
 
 void ProfileServiceHandler::get(UserProfile& _return, const int32_t id) {
-	log_handler_.writeGet(id);
+	log_.writeGet(id);
 	_return.id = -1;
 	
 	boost::shared_lock<boost::shared_mutex> lock(mutex_);
@@ -65,7 +70,7 @@ void ProfileServiceHandler::get(UserProfile& _return, const int32_t id) {
 	// Try getting from db
 	std::string buffer;
 	if (db_enabled_ && db_.get(std::to_string(id), &buffer)) {
-		_return = JSONSerialization<UserProfile>::deserialize(buffer);
+		_return = Util::JSONDeserialize<UserProfile>(buffer);
 		mem_cache_.set(id, _return);
 		return;
 	}
@@ -74,7 +79,7 @@ void ProfileServiceHandler::get(UserProfile& _return, const int32_t id) {
 	if (master_enabled_)
 		slave_->get(_return, id);
 	if (_return.id != -1) { // Success
-		std::string serialized_profile = JSONSerialization<UserProfile>::serialize(_return);
+		std::string serialized_profile = Util::JSONSerialize<UserProfile>(_return);
 		db_.set(std::to_string(id), serialized_profile);
 		mem_cache_.set(id, _return);
 		return;
@@ -82,10 +87,10 @@ void ProfileServiceHandler::get(UserProfile& _return, const int32_t id) {
 }
 
 void ProfileServiceHandler::put(const int32_t id, const UserProfile& profile) {
-	log_handler_.writeSet(id, profile);
+	log_.writeSet(id, profile);
 	
 	boost::shared_lock<boost::shared_mutex> lock(mutex_);
-	std::string serialized_profile = JSONSerialization<UserProfile>::serialize(profile);
+	std::string serialized_profile = Util::JSONSerialize<UserProfile>(profile);
 
 	mem_cache_.set(id, profile);
 	if (db_enabled_) 
@@ -95,7 +100,7 @@ void ProfileServiceHandler::put(const int32_t id, const UserProfile& profile) {
 }
 
 void ProfileServiceHandler::remove(const int32_t id) {
-	log_handler_.writeRemove(id);
+	log_.writeRemove(id);
 	
 	boost::shared_lock<boost::shared_mutex> lock(mutex_);
 	mem_cache_.remove(id);
@@ -105,18 +110,20 @@ void ProfileServiceHandler::remove(const int32_t id) {
 		slave_->remove(id);
 }
 
-void ProfileServiceHandler::dumpCache(const std::string filename) {
-	while (true) {
-		boost::this_thread::sleep_for(boost::chrono::minutes(30));
-		std::cout << "Start dumping cache to " << filename << std::endl;
-		boost::lock_guard<boost::shared_mutex> lock(mutex_);
-		log_handler_.clear();
-		mem_cache_.write(filename);
-	}
-}
+//void ProfileServiceHandler::dumpCache(const std::string filename) {
+//	while (true) {
+//		boost::this_thread::sleep_for(boost::chrono::minutes(30));
+//		std::cout << "Start dumping cache to " << filename << std::endl;
+//		boost::lock_guard<boost::shared_mutex> lock(mutex_);
+//		log_.clear();
+//		mem_cache_.write(filename);
+//	}
+//}
 
 
 ProfileServiceHandler::~ProfileServiceHandler() {
 	db_.close();
 }
+
+} // namespace service
 

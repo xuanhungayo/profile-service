@@ -83,27 +83,27 @@ ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/profile-service: ${OBJECTFILES}
 ${OBJECTDIR}/src/ProfileServiceHandler.o: src/ProfileServiceHandler.cpp
 	${MKDIR} -p ${OBJECTDIR}/src
 	${RM} "$@.d"
-	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/ProfileServiceHandler.o src/ProfileServiceHandler.cpp
+	$(COMPILE.cc) -O2 -Iinc -Ithrift-gen -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/ProfileServiceHandler.o src/ProfileServiceHandler.cpp
 
 ${OBJECTDIR}/src/ServerApp.o: src/ServerApp.cpp
 	${MKDIR} -p ${OBJECTDIR}/src
 	${RM} "$@.d"
-	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/ServerApp.o src/ServerApp.cpp
+	$(COMPILE.cc) -O2 -Iinc -Ithrift-gen -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/ServerApp.o src/ServerApp.cpp
 
 ${OBJECTDIR}/thrift-gen/ProfileService.o: thrift-gen/ProfileService.cpp
 	${MKDIR} -p ${OBJECTDIR}/thrift-gen
 	${RM} "$@.d"
-	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/thrift-gen/ProfileService.o thrift-gen/ProfileService.cpp
+	$(COMPILE.cc) -O2 -Iinc -Ithrift-gen -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/thrift-gen/ProfileService.o thrift-gen/ProfileService.cpp
 
 ${OBJECTDIR}/thrift-gen/profile_constants.o: thrift-gen/profile_constants.cpp
 	${MKDIR} -p ${OBJECTDIR}/thrift-gen
 	${RM} "$@.d"
-	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/thrift-gen/profile_constants.o thrift-gen/profile_constants.cpp
+	$(COMPILE.cc) -O2 -Iinc -Ithrift-gen -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/thrift-gen/profile_constants.o thrift-gen/profile_constants.cpp
 
 ${OBJECTDIR}/thrift-gen/profile_types.o: thrift-gen/profile_types.cpp
 	${MKDIR} -p ${OBJECTDIR}/thrift-gen
 	${RM} "$@.d"
-	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/thrift-gen/profile_types.o thrift-gen/profile_types.cpp
+	$(COMPILE.cc) -O2 -Iinc -Ithrift-gen -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/thrift-gen/profile_types.o thrift-gen/profile_types.cpp
 
 # Subprojects
 .build-subprojects:
@@ -128,19 +128,19 @@ ${TESTDIR}/TestFiles/f2: ${TESTDIR}/test/LRUCachePerformanceTest.o ${OBJECTFILES
 ${TESTDIR}/test/ClientTest.o: test/ClientTest.cpp 
 	${MKDIR} -p ${TESTDIR}/test
 	${RM} "$@.d"
-	$(COMPILE.cc) -O2 -I. -MMD -MP -MF "$@.d" -o ${TESTDIR}/test/ClientTest.o test/ClientTest.cpp
+	$(COMPILE.cc) -O2 -Iinc -Ithrift-gen -I. -MMD -MP -MF "$@.d" -o ${TESTDIR}/test/ClientTest.o test/ClientTest.cpp
 
 
 ${TESTDIR}/test/LRUCacheLogicTest.o: test/LRUCacheLogicTest.cpp 
 	${MKDIR} -p ${TESTDIR}/test
 	${RM} "$@.d"
-	$(COMPILE.cc) -O2 -I. -MMD -MP -MF "$@.d" -o ${TESTDIR}/test/LRUCacheLogicTest.o test/LRUCacheLogicTest.cpp
+	$(COMPILE.cc) -O2 -Iinc -Ithrift-gen -I. -MMD -MP -MF "$@.d" -o ${TESTDIR}/test/LRUCacheLogicTest.o test/LRUCacheLogicTest.cpp
 
 
 ${TESTDIR}/test/LRUCachePerformanceTest.o: test/LRUCachePerformanceTest.cpp 
 	${MKDIR} -p ${TESTDIR}/test
 	${RM} "$@.d"
-	$(COMPILE.cc) -O2 -I. -MMD -MP -MF "$@.d" -o ${TESTDIR}/test/LRUCachePerformanceTest.o test/LRUCachePerformanceTest.cpp
+	$(COMPILE.cc) -O2 -Iinc -Ithrift-gen -I. -MMD -MP -MF "$@.d" -o ${TESTDIR}/test/LRUCachePerformanceTest.o test/LRUCachePerformanceTest.cpp
 
 
 ${OBJECTDIR}/src/ProfileServiceHandler_nomain.o: ${OBJECTDIR}/src/ProfileServiceHandler.o src/ProfileServiceHandler.cpp 
@@ -151,7 +151,7 @@ ${OBJECTDIR}/src/ProfileServiceHandler_nomain.o: ${OBJECTDIR}/src/ProfileService
 	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
 	then  \
 	    ${RM} "$@.d";\
-	    $(COMPILE.cc) -O2 -Dmain=__nomain -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/ProfileServiceHandler_nomain.o src/ProfileServiceHandler.cpp;\
+	    $(COMPILE.cc) -O2 -Iinc -Ithrift-gen -Dmain=__nomain -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/ProfileServiceHandler_nomain.o src/ProfileServiceHandler.cpp;\
 	else  \
 	    ${CP} ${OBJECTDIR}/src/ProfileServiceHandler.o ${OBJECTDIR}/src/ProfileServiceHandler_nomain.o;\
 	fi
@@ -164,7 +164,7 @@ ${OBJECTDIR}/src/ServerApp_nomain.o: ${OBJECTDIR}/src/ServerApp.o src/ServerApp.
 	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
 	then  \
 	    ${RM} "$@.d";\
-	    $(COMPILE.cc) -O2 -Dmain=__nomain -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/ServerApp_nomain.o src/ServerApp.cpp;\
+	    $(COMPILE.cc) -O2 -Iinc -Ithrift-gen -Dmain=__nomain -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/ServerApp_nomain.o src/ServerApp.cpp;\
 	else  \
 	    ${CP} ${OBJECTDIR}/src/ServerApp.o ${OBJECTDIR}/src/ServerApp_nomain.o;\
 	fi
@@ -177,7 +177,7 @@ ${OBJECTDIR}/thrift-gen/ProfileService_nomain.o: ${OBJECTDIR}/thrift-gen/Profile
 	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
 	then  \
 	    ${RM} "$@.d";\
-	    $(COMPILE.cc) -O2 -Dmain=__nomain -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/thrift-gen/ProfileService_nomain.o thrift-gen/ProfileService.cpp;\
+	    $(COMPILE.cc) -O2 -Iinc -Ithrift-gen -Dmain=__nomain -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/thrift-gen/ProfileService_nomain.o thrift-gen/ProfileService.cpp;\
 	else  \
 	    ${CP} ${OBJECTDIR}/thrift-gen/ProfileService.o ${OBJECTDIR}/thrift-gen/ProfileService_nomain.o;\
 	fi
@@ -190,7 +190,7 @@ ${OBJECTDIR}/thrift-gen/profile_constants_nomain.o: ${OBJECTDIR}/thrift-gen/prof
 	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
 	then  \
 	    ${RM} "$@.d";\
-	    $(COMPILE.cc) -O2 -Dmain=__nomain -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/thrift-gen/profile_constants_nomain.o thrift-gen/profile_constants.cpp;\
+	    $(COMPILE.cc) -O2 -Iinc -Ithrift-gen -Dmain=__nomain -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/thrift-gen/profile_constants_nomain.o thrift-gen/profile_constants.cpp;\
 	else  \
 	    ${CP} ${OBJECTDIR}/thrift-gen/profile_constants.o ${OBJECTDIR}/thrift-gen/profile_constants_nomain.o;\
 	fi
@@ -203,7 +203,7 @@ ${OBJECTDIR}/thrift-gen/profile_types_nomain.o: ${OBJECTDIR}/thrift-gen/profile_
 	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
 	then  \
 	    ${RM} "$@.d";\
-	    $(COMPILE.cc) -O2 -Dmain=__nomain -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/thrift-gen/profile_types_nomain.o thrift-gen/profile_types.cpp;\
+	    $(COMPILE.cc) -O2 -Iinc -Ithrift-gen -Dmain=__nomain -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/thrift-gen/profile_types_nomain.o thrift-gen/profile_types.cpp;\
 	else  \
 	    ${CP} ${OBJECTDIR}/thrift-gen/profile_types.o ${OBJECTDIR}/thrift-gen/profile_types_nomain.o;\
 	fi

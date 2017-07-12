@@ -1,27 +1,19 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 /* 
- * File:   L.cpp
- * Author: cpu10170-local
+ * File:   LRUCacheLogicTest.cpp
+ * Author: xuanhungcao
  *
  * Created on June 22, 2017, 1:40 PM
  */
-
-#include "../inc/LRUCache.h"
-#include "../thrift-gen/ProfileService.h"
 
 #include <stdlib.h>
 #include <assert.h>
 #include <iostream>
 
-/*
- * Simple C++ Test Suite
- */
+#include "LRUCache.h"
+#include "ProfileService.h"
+
 using namespace profile;
+using namespace service::cache;
 
 void BasicTest() {
 	const int32_t CAPACITY = 2;
@@ -83,9 +75,9 @@ void BigTest() {
 		assert(cache.contain(i) == false);
 	assert(cache.get(1000)->id == 1000);
 	
-	cache.write("cache.bin");
+	cache.writeToBinaryFile("cache.bin");
 	cache.clear();
-	cache.read("cache.bin");
+	cache.readFromBinaryFile("cache.bin");
 	assert(cache.get(101)-> id == 101);
 	assert(cache.get(1000)-> id == 1000);
 }
