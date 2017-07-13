@@ -34,13 +34,10 @@ public:
 	void get(UserProfile& _return, const int32_t id);
 	void put(const int32_t id, const UserProfile& profile);
 	void remove(const int32_t id);
-	void dumpCache(const std::string filename);
 	virtual ~ProfileServiceHandler();
 private:
-	cache::LRUCache<int32_t, UserProfile> mem_cache_;
+	cache::LRUCache<int32_t, UserProfile> memcache_;
 	std::string cache_type_;
-
-	log::Log<int32_t, UserProfile> log_;
 
 	boost::shared_ptr<ProfileServiceClient> slave_;
 	bool master_enabled_;

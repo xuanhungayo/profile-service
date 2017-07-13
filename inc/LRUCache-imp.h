@@ -11,21 +11,39 @@
 #include <iostream>
 #include <fstream>
 #include <mutex>
+#include <chrono>
 
 #include <boost/archive/binary_iarchive.hpp>
 #include <boost/archive/binary_oarchive.hpp>
 
 #include "MemoryCache.h"
+#include "LRUCache.h"
 
 namespace service {
 namespace cache {
 
 template<class Key, class Value>
-LRUCache<Key, Value>::LRUCache(const int32_t capacity) : capacity_(capacity) {
+LRUCache<Key, Value>::LRUCache(const int32_t capacity) :
+capacity_(capacity),
+log_enabled_(false) {
+}
+
+template<class Key, class Value>
+LRUCache<Key, Value>::LRUCache(const int32_t capacity, const std::string& filename, const std::string& logfile) :
+capacity_(capacity),
+filename_(filename),
+log_(logfile),
+log_enabled_(true) {
+	this->readFromBinaryFile(filename);
+	log_.recover(*this);
+	
+	log_.startWriting();
 }
 
 template<class Key, class Value>
 LRUCache<Key, Value>::~LRUCache() {
+	if (thread_.joinable())
+		thread_.join();
 }
 
 template<class Key, class Value>
@@ -36,6 +54,9 @@ bool LRUCache<Key, Value>::contain(const Key& key) {
 
 template<class Key, class Value>
 boost::optional<Value> LRUCache<Key, Value>::get(const Key& key) {
+	if (log_enabled_)
+		log_.writeGet(key);
+	
 	std::lock_guard<std::mutex> lock(mutex_);
 	typename HashMap::iterator it = hashmap_.find(key);
 	if (it != hashmap_.end()) {
@@ -48,6 +69,9 @@ boost::optional<Value> LRUCache<Key, Value>::get(const Key& key) {
 
 template<class Key, class Value>
 void LRUCache<Key, Value>::set(const Key& key, const Value& value) {
+	if (log_enabled_)
+		log_.writeSet(key, value);
+	
 	std::lock_guard<std::mutex> lock(mutex_);
 	typename HashMap::iterator it = hashmap_.find(key);
 	if (it == hashmap_.end() && hashmap_.size() < capacity_) {
@@ -65,12 +89,59 @@ void LRUCache<Key, Value>::set(const Key& key, const Value& value) {
 
 template<class Key, class Value>
 void LRUCache<Key, Value>::remove(const Key& key) {
+	if (log_enabled_)
+		log_.writeRemove(key);
+	
 	std::lock_guard<std::mutex> lock(mutex_);
 	typename HashMap::iterator it = hashmap_.find(key);
 	if (it != hashmap_.end()) {
 		typename List::iterator pos = (*it).second.second;
 		queue_.erase(pos);
 		hashmap_.erase(key);
+	}
+}
+
+template<class Key, class Value>
+void LRUCache<Key, Value>::clear() {
+	std::lock_guard<std::mutex> lock(mutex_);
+	queue_.clear();
+	hashmap_.clear();
+}
+
+template<class Key, class Value>
+void LRUCache<Key, Value>::startDumping() {
+	thread_ = std::thread(&LRUCache<Key, Value>::dump, this);
+}
+
+template<class Key, class Value>
+void LRUCache<Key, Value>::add(const Key& key, const Value& value) {
+	queue_.push_front(key);
+	hashmap_[key] = make_pair(value, queue_.begin());
+}
+
+template<class Key, class Value>
+void LRUCache<Key, Value>::remove() {
+	Key key = queue_.back();
+	hashmap_.erase(key);
+	queue_.pop_back();
+}
+
+template<class Key, class Value>
+void LRUCache<Key, Value>::update(const Key& key, const Entry& entry) {
+	typename List::iterator pos = entry.second;
+	queue_.erase(pos);
+	queue_.push_front(key);
+	hashmap_[key] = make_pair(entry.first, queue_.begin());
+}
+
+template<class Key, class Value>
+void LRUCache<Key, Value>::dump() {
+	while (true) {
+		std::this_thread::sleep_for(std::chrono::duration<int, std::ratio<1>>(5));
+		std::cout << "Start dumping cache to " << filename_ << std::endl;
+		log_.backup();
+		log_.reset();
+		writeToBinaryFile(filename_);
 	}
 }
 
@@ -102,34 +173,6 @@ void LRUCache<Key, Value>::readFromBinaryFile(const std::string& filename) {
 		ia >> value;
 		add(key, value);
 	}
-}
-
-template<class Key, class Value>
-void LRUCache<Key, Value>::clear() {
-	std::lock_guard<std::mutex> lock(mutex_);
-	queue_.clear();
-	hashmap_.clear();
-}
-
-template<class Key, class Value>
-void LRUCache<Key, Value>::add(const Key& key, const Value& value) {
-	queue_.push_front(key);
-	hashmap_[key] = make_pair(value, queue_.begin());
-}
-
-template<class Key, class Value>
-void LRUCache<Key, Value>::remove() {
-	Key key = queue_.back();
-	hashmap_.erase(key);
-	queue_.pop_back();
-}
-
-template<class Key, class Value>
-void LRUCache<Key, Value>::update(const Key& key, const Entry& entry) {
-	typename List::iterator pos = entry.second;
-	queue_.erase(pos);
-	queue_.push_front(key);
-	hashmap_[key] = make_pair(entry.first, queue_.begin());
 }
 
 } // namespace cache

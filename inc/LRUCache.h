@@ -12,8 +12,10 @@
 #include <unordered_map>
 #include <utility>
 #include <mutex>
+#include <thread>
 
 #include "MemoryCache.h"
+#include "Log.h"
 
 namespace service {
 namespace cache {
@@ -26,6 +28,7 @@ public:
 	typedef std::unordered_map<Key, Entry> HashMap;
 
 	LRUCache<Key, Value>(const int capacity);
+	LRUCache<Key, Value>(const int capacity, const std::string& filename, const std::string& logfile);
 	~LRUCache<Key, Value>();
 
 	bool contain(const Key& key) override;
@@ -33,18 +36,26 @@ public:
 	void set(const Key& key, const Value& value) override;
 	void remove(const Key& key) override;
 	void clear() override;
-	void readFromBinaryFile(const std::string& filename) override;
-	void writeToBinaryFile(const std::string& filename) override;
+	void startDumping();
 
 private:
 	HashMap hashmap_;
 	List queue_;
 	std::mutex mutex_;
 	int32_t capacity_;
+	std::thread thread_;
+	
+	const std::string filename_;
+	log::Log<Key, Value> log_;
+	bool log_enabled_;
 
 	void add(const Key& key, const Value& value);
 	void remove();
 	void update(const Key& key, const Entry& entry);
+
+	void dump();
+	void readFromBinaryFile(const std::string& filename) override;
+	void writeToBinaryFile(const std::string& filename) override;
 };
 
 

@@ -19,6 +19,7 @@ namespace log {
 template<class Key, class Value>
 class Log {
 public:
+	Log();
 	Log(const std::string& filename);
 	~Log();
 	void recover(cache::MemoryCache<Key, Value>& memcache);
@@ -27,7 +28,8 @@ public:
 	void writeSet(const Key& key, const Value&value);
 	void writeRemove(const Key& key);
 	void reset();
-
+	void backup();
+	
 private:
 	std::ifstream filein_;
 	std::ofstream fileout_;

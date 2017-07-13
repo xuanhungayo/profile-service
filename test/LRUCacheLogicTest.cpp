@@ -75,11 +75,12 @@ void BigTest() {
 		assert(cache.contain(i) == false);
 	assert(cache.get(1000)->id == 1000);
 	
-	cache.writeToBinaryFile("cache.bin");
-	cache.clear();
-	cache.readFromBinaryFile("cache.bin");
-	assert(cache.get(101)-> id == 101);
-	assert(cache.get(1000)-> id == 1000);
+	// Test cache dumping
+//	cache.writeToBinaryFile("cache.bin");
+//	cache.clear();
+//	cache.readFromBinaryFile("cache.bin");
+//	assert(cache.get(101)-> id == 101);
+//	assert(cache.get(1000)-> id == 1000);
 }
 
 int main(int argc, char** argv) {

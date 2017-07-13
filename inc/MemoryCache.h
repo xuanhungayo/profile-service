@@ -21,6 +21,8 @@ public:
 	virtual void set(const Key& key, const Value& value) = 0;
 	virtual void remove(const Key& key) = 0;
 	virtual void clear() = 0;
+
+private:
 	virtual void readFromBinaryFile(const std::string& filename) = 0;
 	virtual void writeToBinaryFile(const std::string& filename) = 0;
 };

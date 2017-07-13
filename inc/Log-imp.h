@@ -9,9 +9,14 @@
 #define LOG_IMP_H
 
 #include "Util.h"
+#include "Log.h"
 
 namespace service {
 namespace log {
+
+template<class Key, class Value>
+Log<Key, Value>::Log(){
+}
 
 template<class Key, class Value>
 Log<Key, Value>::Log(const std::string& filename) : filename_(filename) {
@@ -84,8 +89,22 @@ void Log<Key, Value>::writeRemove(const Key& key) {
 
 template<class Key, class Value>
 void Log<Key, Value>::reset() {
+	std::lock_guard<std::mutex> lock(mutex_);
 	fileout_.close();
 	fileout_.open(filename_.c_str(), std::ios::out);
+}
+
+template<class Key, class Value>
+void Log<Key, Value>::backup() {
+	std::lock_guard<std::mutex> lock(mutex_);
+	fileout_.close();
+	
+	filein_.open(filename_.c_str(), std::ios::binary);
+	fileout_.open( (filename_ + ".bak").c_str(), std::ios::binary);
+	fileout_ << filein_.rdbuf();
+	
+	filein_.close();
+	fileout_.close();
 }
 
 } // namespace log
