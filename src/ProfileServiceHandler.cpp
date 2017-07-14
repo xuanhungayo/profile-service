@@ -16,47 +16,42 @@
 #include <thrift/protocol/TBinaryProtocol.h>
 
 #include "Util.h"
+#include "Slave.h"
 
 using apache::thrift::protocol::TBinaryProtocol;
 using apache::thrift::transport::TSocket;
 using apache::thrift::transport::TFramedTransport;
-
-using namespace profile;
 
 namespace service {
 
 ProfileServiceHandler::ProfileServiceHandler(const AbstractConfiguration& config) :
 memcache_(config.getInt("cache-capacity"), config.getString("cache-file"), config.getString("log-file")),
 db_enabled_(config.getBool("db")),
-master_enabled_(config.getBool("master"))
-{
+master_enabled_(config.getBool("master")),
+master_host_(config.getString("master-host")),
+master_port_(config.getInt("master-port")) {
 	// Set up DB
 	if (db_enabled_)
 		db_.open(config.getString("db-file").c_str(), HashDB::OWRITER | HashDB::OCREATE);
-	
-	// Set up connection to master server
-	if (master_enabled_) {
-		boost::shared_ptr<TSocket> socket(new TSocket(config.getString("master-host"), config.getInt("master-port")));
-		boost::shared_ptr<TFramedTransport> transport(new TFramedTransport(socket));
-		boost::shared_ptr<TBinaryProtocol> protocol(new TBinaryProtocol(transport));
-		slave_.reset(new ProfileServiceClient(protocol));
-		
-		transport->open();
-	}
-	
+
+	// Run thread for cache dumping
 	memcache_.startDumping();
+}
+
+ProfileServiceHandler::~ProfileServiceHandler() {
+	db_.close();
 }
 
 void ProfileServiceHandler::get(UserProfile& _return, const int32_t id) {
 	_return.id = -1;
 	boost::optional<UserProfile> profile;
-	
+
 	// Try getting from cache
 	if (profile = memcache_.get(id)) {
 		_return = (*profile);
 		return;
-	} 
-	
+	}
+
 	// Try getting from db
 	std::string buffer;
 	if (db_enabled_ && db_.get(std::to_string(id), &buffer)) {
@@ -64,13 +59,16 @@ void ProfileServiceHandler::get(UserProfile& _return, const int32_t id) {
 		memcache_.set(id, _return);
 		return;
 	}
-	
+
 	// Try getting from master
-	if (master_enabled_)
-		slave_->get(_return, id);
+	if (master_enabled_) {
+		Slave slave(master_host_, master_port_);
+		slave.get(_return, id);
+	}
 	if (_return.id != -1) { // Success
 		std::string serialized_profile = Util::JSONSerialize<UserProfile>(_return);
-		db_.set(std::to_string(id), serialized_profile);
+		if (db_enabled_) 
+			db_.set(std::to_string(id), serialized_profile);
 		memcache_.set(id, _return);
 		return;
 	}
@@ -80,22 +78,22 @@ void ProfileServiceHandler::put(const int32_t id, const UserProfile& profile) {
 	std::string serialized_profile = Util::JSONSerialize<UserProfile>(profile);
 
 	memcache_.set(id, profile);
-	if (db_enabled_) 
+	if (db_enabled_)
 		db_.set(std::to_string(id), serialized_profile);
-	if (master_enabled_)
-		slave_->put(id, profile);
+	if (master_enabled_) {
+		Slave slave(master_host_, master_port_);
+		slave.put(id, profile);
+	}
 }
 
 void ProfileServiceHandler::remove(const int32_t id) {
 	memcache_.remove(id);
-	if (db_enabled_) 
+	if (db_enabled_)
 		db_.remove(std::to_string(id));
-	if (master_enabled_)
-		slave_->remove(id);
-}
-
-ProfileServiceHandler::~ProfileServiceHandler() {
-	db_.close();
+	if (master_enabled_) {
+		Slave slave(master_host_, master_port_);
+		slave.remove(id);
+	}
 }
 
 } // namespace service

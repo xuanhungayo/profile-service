@@ -137,7 +137,7 @@ void LRUCache<Key, Value>::update(const Key& key, const Entry& entry) {
 template<class Key, class Value>
 void LRUCache<Key, Value>::dump() {
 	while (true) {
-		std::this_thread::sleep_for(std::chrono::duration<int, std::ratio<1>>(5));
+		std::this_thread::sleep_for(std::chrono::duration<int, std::ratio<60>>(30));
 		std::cout << "Start dumping cache to " << filename_ << std::endl;
 		log_.backup();
 		log_.reset();

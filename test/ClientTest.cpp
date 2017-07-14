@@ -47,7 +47,7 @@ void clientThread() {
 	boost::shared_ptr<TTransport> transport(new TFramedTransport(socket));
 	boost::shared_ptr<TProtocol> protocol(new TBinaryProtocol(transport));
 
-	ProfileServiceClient client(protocol);
+	boost::shared_ptr<ProfileServiceClient> client(new ProfileServiceClient(protocol));
 	try {
 		transport->open();
 
@@ -60,14 +60,14 @@ void clientThread() {
 					user.id = rand() % 10000 + 1;
 					user.name = "abcedfghijklmnopqrstuvwxyz";
 					user.age = rand() % 100 + 1;
-					client.put(user.id, user);
+					client->put(user.id, user);
 				}
 					break;
 				case 1:
 				{
 					int id = rand() % 10000 + 1;
 					UserProfile gotUser;
-					client.get(gotUser, id);
+					client->get(gotUser, id);
 					get_count ++;
 					if (gotUser.id != -1) hit++;
 				}
@@ -75,7 +75,7 @@ void clientThread() {
 				case 2:
 				{
 					int id = rand() % 10000 + 1;
-					client.remove(id);
+					client->remove(id);
 				}
 					break;
 			}

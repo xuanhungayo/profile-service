@@ -56,7 +56,7 @@ int ServerApp::main(const ArgVec& args) {
 	
 	// Set up thread manager for Nonblocking server
 	boost::shared_ptr<ThreadManager> threadManager =
-			ThreadManager::newSimpleThreadManager(config().getInt("max-client"));
+			ThreadManager::newSimpleThreadManager(config().getInt("worker"));
 	threadManager->threadFactory(
 			boost::make_shared<PosixThreadFactory>(new PosixThreadFactory()));
 	threadManager->start();

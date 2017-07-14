@@ -37,6 +37,7 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 OBJECTFILES= \
 	${OBJECTDIR}/src/ProfileServiceHandler.o \
 	${OBJECTDIR}/src/ServerApp.o \
+	${OBJECTDIR}/src/Slave.o \
 	${OBJECTDIR}/thrift-gen/ProfileService.o \
 	${OBJECTDIR}/thrift-gen/profile_constants.o \
 	${OBJECTDIR}/thrift-gen/profile_types.o
@@ -122,6 +123,11 @@ ${OBJECTDIR}/src/ServerApp.o: src/ServerApp.cpp
 	${RM} "$@.d"
 	$(COMPILE.cc) -g -Iinc -Ithrift-gen -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/ServerApp.o src/ServerApp.cpp
 
+${OBJECTDIR}/src/Slave.o: src/Slave.cpp
+	${MKDIR} -p ${OBJECTDIR}/src
+	${RM} "$@.d"
+	$(COMPILE.cc) -g -Iinc -Ithrift-gen -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/Slave.o src/Slave.cpp
+
 ${OBJECTDIR}/thrift-gen/ProfileService.o: thrift-gen/ProfileService.cpp
 	${MKDIR} -p ${OBJECTDIR}/thrift-gen
 	${RM} "$@.d"
@@ -199,6 +205,19 @@ ${OBJECTDIR}/src/ServerApp_nomain.o: ${OBJECTDIR}/src/ServerApp.o src/ServerApp.
 	    $(COMPILE.cc) -g -Iinc -Ithrift-gen -std=c++11 -Dmain=__nomain -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/ServerApp_nomain.o src/ServerApp.cpp;\
 	else  \
 	    ${CP} ${OBJECTDIR}/src/ServerApp.o ${OBJECTDIR}/src/ServerApp_nomain.o;\
+	fi
+
+${OBJECTDIR}/src/Slave_nomain.o: ${OBJECTDIR}/src/Slave.o src/Slave.cpp 
+	${MKDIR} -p ${OBJECTDIR}/src
+	@NMOUTPUT=`${NM} ${OBJECTDIR}/src/Slave.o`; \
+	if (echo "$$NMOUTPUT" | ${GREP} '|main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
+	then  \
+	    ${RM} "$@.d";\
+	    $(COMPILE.cc) -g -Iinc -Ithrift-gen -std=c++11 -Dmain=__nomain -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/Slave_nomain.o src/Slave.cpp;\
+	else  \
+	    ${CP} ${OBJECTDIR}/src/Slave.o ${OBJECTDIR}/src/Slave_nomain.o;\
 	fi
 
 ${OBJECTDIR}/thrift-gen/ProfileService_nomain.o: ${OBJECTDIR}/thrift-gen/ProfileService.o thrift-gen/ProfileService.cpp 

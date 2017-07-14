@@ -9,6 +9,7 @@
       <itemPath>inc/MemoryCache.h</itemPath>
       <itemPath>inc/ProfileServiceHandler.h</itemPath>
       <itemPath>inc/ServerApp.h</itemPath>
+      <itemPath>inc/Slave.h</itemPath>
       <itemPath>inc/Util-imp.h</itemPath>
       <itemPath>inc/Util.h</itemPath>
     </logicalFolder>
@@ -19,6 +20,7 @@
     <logicalFolder name="src" displayName="src" projectFiles="true">
       <itemPath>src/ProfileServiceHandler.cpp</itemPath>
       <itemPath>src/ServerApp.cpp</itemPath>
+      <itemPath>src/Slave.cpp</itemPath>
     </logicalFolder>
     <logicalFolder name="thrift-gen" displayName="thrift-gen" projectFiles="true">
       <itemPath>thrift-gen/ProfileService.cpp</itemPath>
@@ -166,6 +168,8 @@
       </item>
       <item path="inc/ServerApp.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="inc/Slave.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="inc/Util-imp.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="inc/Util.h" ex="false" tool="3" flavor2="0">
@@ -179,6 +183,8 @@
       <item path="src/ProfileServiceHandler.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="src/ServerApp.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/Slave.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="test/ClientTest.cpp" ex="false" tool="1" flavor2="0">
       </item>
@@ -284,6 +290,8 @@
       </item>
       <item path="inc/ServerApp.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="inc/Slave.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="inc/Util-imp.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="inc/Util.h" ex="false" tool="3" flavor2="0">
@@ -297,6 +305,8 @@
       <item path="src/ProfileServiceHandler.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="src/ServerApp.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/Slave.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="test/ClientTest.cpp" ex="false" tool="1" flavor2="0">
       </item>

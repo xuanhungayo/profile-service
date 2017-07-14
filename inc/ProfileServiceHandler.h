@@ -23,6 +23,7 @@
 using profile::ProfileServiceIf;
 using profile::UserProfile;
 using profile::ProfileServiceClient;
+
 using kyotocabinet::HashDB;
 using Poco::Util::AbstractConfiguration;
 
@@ -39,12 +40,13 @@ private:
 	cache::LRUCache<int32_t, UserProfile> memcache_;
 	std::string cache_type_;
 
-	boost::shared_ptr<ProfileServiceClient> slave_;
-	bool master_enabled_;
-
 	HashDB db_;
 	bool db_enabled_;
-
+	
+	bool master_enabled_;
+	std::string master_host_;
+	int master_port_;
+	
 	boost::shared_mutex mutex_;
 };
 
