@@ -162,8 +162,14 @@ template<class Key, class Value>
 void LRUCache<Key, Value>::readFromBinaryFile(const std::string& filename) {
 	std::lock_guard<std::mutex> lock(mutex_);
 	std::ifstream ifs(filename.c_str());
-	boost::archive::binary_iarchive ia(ifs);
+	if (!ifs.is_open()) {
+		std::cout << "No cache find found to recover" << std::endl;
+		return;
+	}
 
+	
+	boost::archive::binary_iarchive ia(ifs);
+	
 	int32_t _size;
 	Key key;
 	Value value;

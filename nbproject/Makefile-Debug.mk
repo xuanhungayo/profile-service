@@ -71,7 +71,7 @@ FFLAGS=
 ASFLAGS=
 
 # Link Libraries and Options
-LDLIBSOPTIONS=/usr/local/lib/libkyotocabinet.a /usr/local/lib/libboost_chrono.a /usr/local/lib/libboost_serialization.a /usr/local/lib/libboost_thread.a /usr/local/lib/libboost_system.a /usr/local/lib/libthrift.a /usr/local/lib/libthriftnb.a /usr/local/lib/libthriftz.a /usr/lib/x86_64-linux-gnu/libevent.a /usr/local/lib/libPocoUtil.a /usr/local/lib/libPocoJSON.a /usr/local/lib/libPocoNet.a /usr/local/lib/libPocoXML.a /usr/local/lib/libPocoFoundation.a -lpthread /usr/lib/x86_64-linux-gnu/libz.a /usr/lib/x86_64-linux-gnu/liblzma.a -llzo2
+LDLIBSOPTIONS=/usr/local/lib/libkyotocabinet.a /usr/local/lib/libboost_chrono.a /usr/local/lib/libboost_serialization.a /usr/local/lib/libboost_thread.a /usr/local/lib/libboost_system.a /usr/local/lib/libthrift.a /usr/local/lib/libthriftnb.a /usr/local/lib/libthriftz.a /usr/lib/x86_64-linux-gnu/libevent.a /usr/local/lib/libPocoUtil.a /usr/local/lib/libPocoJSON.a /usr/local/lib/libPocoNet.a /usr/local/lib/libPocoXML.a /usr/local/lib/libPocoFoundation.a -lpthread /usr/lib/x86_64-linux-gnu/libz.a /usr/lib/x86_64-linux-gnu/liblzma.a
 
 # Build Targets
 .build-conf: ${BUILD_SUBPROJECTS}

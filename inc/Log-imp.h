@@ -29,7 +29,7 @@ template<class Key, class Value>
 void Log<Key, Value>::recover(cache::MemoryCache<Key, Value>& memcache_) {
 	filein_.open(filename_.c_str(), std::ios::in);
 	if (!filein_.is_open()) {
-		std::cout << "Error opening log file to recover" << "\n";
+		std::cout << "No log file found to recover" << "\n";
 		return;
 	}
 

@@ -13,6 +13,7 @@
 
 #include <cstdlib>
 #include <iostream>
+#include <unordered_map>
 #include <thread>
 #include <mutex>
 #include <assert.h>
@@ -26,13 +27,15 @@ using namespace profile;
 
 std::mutex mtx;
 
-const int REQ_PER_CLIENT = 10000;
-const int CLIENT_NUM = 8;
-const int LOAD_TEST_NUM = 10;
+const int REQ_PER_CLIENT = 1000;
+const int CLIENT_NUM = 4;
+const int LOAD_TEST_NUM = 5;
 
 int total = 0;
 int hit = 0;
 int get_count = 0;
+
+std::unordered_map<int, int> age;
 
 void print(const UserProfile& profile) {
 	std::cout << profile.id << "\n";
@@ -57,25 +60,36 @@ void clientThread() {
 			switch (req_t) {
 				case 0:
 				{
+					std::lock_guard<std::mutex> lock(mtx);
 					user.id = rand() % 10000 + 1;
 					user.name = "abcedfghijklmnopqrstuvwxyz";
 					user.age = rand() % 100 + 1;
 					client->put(user.id, user);
+					age[user.id] = user.age;
 				}
 					break;
 				case 1:
 				{
+					std::lock_guard<std::mutex> lock(mtx);
 					int id = rand() % 10000 + 1;
 					UserProfile gotUser;
 					client->get(gotUser, id);
 					get_count ++;
-					if (gotUser.id != -1) hit++;
+					if (gotUser.id != -1) {
+						hit++;
+						// ONLY used in no-recover mode
+						//assert(age[id] == gotUser.age);
+					} else {
+						//assert(age.count(id) == 0);
+					}
 				}
 					break;
 				case 2:
 				{
+					std::lock_guard<std::mutex> lock(mtx);
 					int id = rand() % 10000 + 1;
 					client->remove(id);
+					age.erase(id);
 				}
 					break;
 			}

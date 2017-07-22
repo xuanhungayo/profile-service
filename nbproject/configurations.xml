@@ -103,7 +103,6 @@
             <linkerLibLibItem>pthread</linkerLibLibItem>
             <linkerLibFileItem>/usr/lib/x86_64-linux-gnu/libz.a</linkerLibFileItem>
             <linkerLibFileItem>/usr/lib/x86_64-linux-gnu/liblzma.a</linkerLibFileItem>
-            <linkerLibLibItem>lzo2</linkerLibLibItem>
           </linkerLibItems>
         </linkerTool>
       </compileType>
