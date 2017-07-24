@@ -16,7 +16,6 @@
 #include <thrift/protocol/TBinaryProtocol.h>
 
 #include "Util.h"
-#include "Slave.h"
 
 using apache::thrift::protocol::TBinaryProtocol;
 using apache::thrift::transport::TSocket;
@@ -28,8 +27,7 @@ ProfileServiceHandler::ProfileServiceHandler(const AbstractConfiguration& config
 memcache_(config.getInt("cache-capacity"), config.getString("cache-file"), config.getString("log-file")),
 db_enabled_(config.getBool("db")),
 master_enabled_(config.getBool("master")),
-master_host_(config.getString("master-host")),
-master_port_(config.getInt("master-port")) {
+slave_(config.getString("master-host"),  config.getInt("master-port"), config.getInt("worker")) {
 	// Set up DB
 	if (db_enabled_)
 		db_.open(config.getString("db-file").c_str(), HashDB::OWRITER | HashDB::OCREATE);
@@ -62,8 +60,7 @@ void ProfileServiceHandler::get(UserProfile& _return, const int32_t id) {
 
 	// Try getting from master
 	if (master_enabled_) {
-		Slave slave(master_host_, master_port_);
-		slave.get(_return, id);
+		slave_.get(_return, id);
 	}
 	if (_return.id != -1) { // Success
 		std::string serialized_profile = Util::JSONSerialize<UserProfile>(_return);
@@ -81,8 +78,7 @@ void ProfileServiceHandler::put(const int32_t id, const UserProfile& profile) {
 	if (db_enabled_)
 		db_.set(std::to_string(id), serialized_profile);
 	if (master_enabled_) {
-		Slave slave(master_host_, master_port_);
-		slave.put(id, profile);
+		slave_.put(id, profile);
 	}
 }
 
@@ -91,8 +87,7 @@ void ProfileServiceHandler::remove(const int32_t id) {
 	if (db_enabled_)
 		db_.remove(std::to_string(id));
 	if (master_enabled_) {
-		Slave slave(master_host_, master_port_);
-		slave.remove(id);
+		slave_.remove(id);
 	}
 }
 

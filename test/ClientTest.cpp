@@ -77,10 +77,11 @@ void clientThread() {
 					get_count ++;
 					if (gotUser.id != -1) {
 						hit++;
-						// ONLY used in no-recover mode
-						//assert(age[id] == gotUser.age);
+						// ONLY used when no data, log or cache provided
+//						std::cout << age[id] << " " << gotUser.age << std::endl;
+//						assert(age[id] == gotUser.age);
 					} else {
-						//assert(age.count(id) == 0);
+//						assert(age.count(id) == 0);
 					}
 				}
 					break;

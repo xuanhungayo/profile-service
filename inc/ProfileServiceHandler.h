@@ -19,6 +19,7 @@
 #include "MemoryCache.h"
 #include "LRUCache.h"
 #include "Log.h"
+#include "Slave.h"
 
 using profile::ProfileServiceIf;
 using profile::UserProfile;
@@ -44,8 +45,7 @@ private:
 	bool db_enabled_;
 	
 	bool master_enabled_;
-	std::string master_host_;
-	int master_port_;
+	Slave slave_;
 	
 	boost::shared_mutex mutex_;
 };

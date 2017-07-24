@@ -8,6 +8,10 @@
 #ifndef SLAVE_H
 #define SLAVE_H
 
+#include <vector>
+#include <thread>
+#include <mutex>
+
 #include <thrift/transport/TSocket.h>
 #include <thrift/transport/TTransportUtils.h>
 #include <thrift/protocol/TBinaryProtocol.h>
@@ -25,17 +29,23 @@ namespace service {
 
 class Slave {
 public:
-	Slave(const std::string& master_host, int master_port);
+	Slave(const std::string& master_host, int master_port, int connections_num);
 	~Slave();
 
 	void get(UserProfile& _return, const int32_t id);
 	void put(const int32_t id, const UserProfile& profile);
 	void remove(const int32_t id);
 private:
-	boost::shared_ptr<TSocket> socket_;
-	boost::shared_ptr<TFramedTransport> transport_;
-	boost::shared_ptr<TBinaryProtocol> protocol_;
-	boost::shared_ptr<ProfileServiceClient> client_;
+	std::mutex client_mtx_;
+	int connections_num_;
+	
+	std::vector<boost::shared_ptr<TSocket>> sockets_;
+	std::vector<boost::shared_ptr<TFramedTransport>> transports_;
+	std::vector<boost::shared_ptr<TBinaryProtocol>> protocols_;
+	std::vector<boost::shared_ptr<ProfileServiceClient>> clients_;
+	
+	boost::shared_ptr<ProfileServiceClient> getClient();
+	void returnClient(boost::shared_ptr<ProfileServiceClient> client);
 };
 
 } // namespace service

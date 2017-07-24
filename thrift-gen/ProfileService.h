@@ -365,6 +365,7 @@ class ProfileServiceClient : virtual public ProfileServiceIf {
     iprot_ = iprot.get();
     oprot_ = oprot.get();
   }
+  
  public:
   boost::shared_ptr< ::apache::thrift::protocol::TProtocol> getInputProtocol() {
     return piprot_;
